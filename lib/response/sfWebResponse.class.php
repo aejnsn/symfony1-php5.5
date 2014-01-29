@@ -406,7 +406,14 @@ class sfWebResponse extends sfResponse
    */
   protected function normalizeHeaderName($name)
   {
-    return preg_replace('/\-(.)/e', "'-'.strtoupper('\\1')", strtr(ucfirst(strtolower($name)), '_', '-'));
+    // patch from http://stackoverflow.com/questions/18077276/symfony-1-4-using-deprecated-functions-in-php-5-5
+    return preg_replace_callback(
+              '/\-(.)/',
+              function ($matches) {
+                return '-'.strtoupper($matches[1]);
+              },
+              strtr(ucfirst(strtolower($name)), '_', '-')
+    );
   }
 
   /**
