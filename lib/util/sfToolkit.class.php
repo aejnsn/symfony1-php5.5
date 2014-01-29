@@ -352,7 +352,8 @@ class sfToolkit
   }
 
   /**
-   * Returns subject replaced with regular expression matchs
+   * Returns subject replaced with regular expression matches.
+   * Use sfToolkit::pregtrcb if your regular expression is using /e flag.
    *
    * @param mixed $search        subject to search
    * @param array $replacePairs  array of search => replace pairs
@@ -361,6 +362,28 @@ class sfToolkit
   {
     return preg_replace(array_keys($replacePairs), array_values($replacePairs), $search);
   }
+
+  /**
+   * Returns subject replaced with regular expression matches.
+   * This function accepts callback replacements only. Use sfToolkit::pregtr to do simple preg_replace.
+   *
+   * @param mixed $search        subject to search
+   * @param array $replacePairs  array of search => replace callback pairs
+   */
+  public static function pregtrcb($search, $replacePairs)
+  {
+    foreach( $replacePairs as $pattern=>$callback )
+    {
+      $search = preg_replace_callback(
+                  $pattern,
+                  $callback,
+                  $search
+                );
+    }
+
+    return $search;
+  }
+
 
   /**
    * Checks if array values are empty
